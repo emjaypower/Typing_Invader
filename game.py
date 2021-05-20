@@ -25,7 +25,7 @@ class MyGame(arcade.View):
         # Our physics engine
         self.physics_engine = None
 
-        arcade.set_background_color(arcade.csscolor.WHITE)
+        arcade.set_background_color(arcade.color.BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -33,10 +33,9 @@ class MyGame(arcade.View):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         # Create player
-        image_source = "assets\pirate.png"
-        self.player_sprite = arcade.Sprite(image_source, 1)
+        self.player_sprite = player(1.25)
         self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
+        self.player_sprite.center_y = 65 * 1.25 / 2
         self.player_list.append(self.player_sprite)
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
@@ -102,6 +101,15 @@ class gameOver(arcade.View):
             menu = mainMenu()
             self.window.show_view(menu)
 
+class player(arcade.Sprite):
+    def __init__(self, scale):
+        super().__init__()
+        self.texture = arcade.load_texture("assets\city.png")
+        self.scale = scale
+        self.health = 5
+        
+    def take_damage(self):
+        self.health -= 1
 
 def main():
     """ Main method """
