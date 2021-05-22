@@ -1,4 +1,6 @@
 import arcade
+import random
+from enemy import Enemy
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -21,7 +23,9 @@ class MyGame(arcade.View):
         self.player_list = None
         # Separate variable that holds the player sprite
         self.player_sprite = None
-
+        self.enemies = Enemy()
+        self.enemies.set_width(SCREEN_WIDTH)
+        self.enemies.load_enemy()
         # Our physics engine
         self.physics_engine = None
 
@@ -29,6 +33,8 @@ class MyGame(arcade.View):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
+        # Load the background image. Do this in the setup so we don't keep reloading it all the time.
+        self.background = arcade.load_texture("space_type/assets/rsz_emfutr.png")
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -39,6 +45,8 @@ class MyGame(arcade.View):
         self.player_list.append(self.player_sprite)
         # Create the 'physics engine'
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
+        # Create enemey
+        self.enemy_list = self.enemies.setup()
 
     def on_draw(self):
         """ Render the screen. """
@@ -46,9 +54,17 @@ class MyGame(arcade.View):
         # Clear the screen to the background color
         arcade.start_render()
 
+        # Draw the background texture
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
+
         # Draw our sprites
         self.wall_list.draw()
         self.player_list.draw()
+        # enemy draw
+        self.enemy_list.draw()
+
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -62,9 +78,26 @@ class MyGame(arcade.View):
     def on_update(self, delta_time):
         """ Movement and game logic """
         self.physics_engine.update()
+        #
+        self.enemies.update_enemies()
+
         if self.game_over:
             end = gameOver()
             self.window.show_view(end)
+            #
+        if len(self.enemies.enemy_list) == 0:
+            self.enemies.load_enemy()
+
+class Sounds:
+    
+    def __init__(self):
+        """This class holds all of the sounds that we are going to be using, including sound effects
+           and songs for various parts of the game"""
+        self.volume = 20
+        self.sounds = {"main_1":"IceBlizzard.wav"}
+    
+    def play_sound(self, sound):
+        arcade.Sound(self.sounds[sound]).play(volume=self.volume)
 
 class mainMenu(arcade.View):
     def on_show(self):
@@ -116,6 +149,8 @@ def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     menu = mainMenu()
     window.show_view(menu)
+    hand_sound = arcade.load_sound("space_type\IceBlizzard.wav")
+    arcade.play_sound(hand_sound)
     arcade.run()
 
 
