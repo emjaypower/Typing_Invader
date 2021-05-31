@@ -34,7 +34,7 @@ class MyGame(arcade.View):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
-        self.background = arcade.load_texture("space_type/assets/rsz_emfutr.png")
+        self.background = arcade.load_texture("assets/rsz_emfutr.png")
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -64,6 +64,10 @@ class MyGame(arcade.View):
         self.player_list.draw()
         # enemy draw
         self.enemy_list.draw()
+
+        # display info
+        arcade.draw_text(F'LIVES: {self.player_sprite.health}', SCREEN_WIDTH - 100, 64, arcade.color.WHITE, 
+                        font_size=40, anchor_x="center")
 
 
     def on_key_press(self, key, modifiers):
@@ -149,7 +153,7 @@ def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     menu = mainMenu()
     window.show_view(menu)
-    hand_sound = arcade.load_sound("space_type\IceBlizzard.wav")
+    hand_sound = arcade.load_sound("IceBlizzard.wav")
     arcade.play_sound(hand_sound)
     arcade.run()
 
