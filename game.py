@@ -13,6 +13,7 @@ ASSETS_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_Invader/ass
 BLIZZARD_PATH = pathlib.Path("IceBlizzard.wav")
 # FULL_BLIZZARD_PATH = BLIZZARD_PATH.absolute()
 FULL_BLIZZARD_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_invader/IceBlizzard.wav")
+FULL_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_invader/")
 print(FULL_BLIZZARD_PATH.exists())
 print(FULL_BLIZZARD_PATH.is_file())
 print(FULL_BLIZZARD_PATH.parent)
@@ -46,7 +47,7 @@ class MyGame(arcade.View):
         """ Set up the game here. Call this function to restart the game. """
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         self.background = arcade.load_texture(f"{ASSETS_PATH}/rsz_emfutr.png")
-        self.background = arcade.load_texture("assets/rsz_emfutr.png")
+        # self.background = arcade.load_texture("assets/rsz_emfutr.png")
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -85,6 +86,8 @@ class MyGame(arcade.View):
         self.player_list.draw()
         # enemy draw
         self.enemy_list.draw()
+        for enemy in self.enemies.enemy_list:
+            arcade.draw_text(enemy.text, enemy.center_x, enemy.center_y, arcade.color.WHITE, 40)
 
         # display info
         arcade.draw_text(F'LIVES: {self.player_sprite.health}', SCREEN_WIDTH - 100, 64, arcade.color.WHITE, 
@@ -119,7 +122,8 @@ class Sounds:
         """This class holds all of the sounds that we are going to be using, including sound effects
            and songs for various parts of the game"""
         self.volume = 20
-        self.sounds = {"main_1":"Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
+        self.sounds = {"main_1": f"{FULL_PATH}Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
+        # self.sounds = {"main_1":"Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
     
     def play_sound(self, sound):
         arcade.Sound(self.sounds[sound]).play(volume=self.volume)
@@ -177,7 +181,7 @@ def main():
     # print(BLIZZARD_PATH.is_file())
     # print(BLIZZARD_PATH.exists())
     hand_sound = arcade.load_sound(f"{FULL_BLIZZARD_PATH}")
-    hand_sound = arcade.load_sound("Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3")
+    hand_sound = arcade.load_sound(f"{FULL_PATH}/Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3")
     arcade.play_sound(hand_sound)
     arcade.run()
 

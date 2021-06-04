@@ -70,7 +70,7 @@ class Enemy(arcade.Window):
 
     # def on_draw(self):
         # for enemy in self.enemy_list:
-            # enemy.draw_string()
+            # self.draw_string(enemy)
 
 
 
@@ -96,11 +96,11 @@ class Enemy(arcade.Window):
                 # Create the enemy instance
                 # enemy image from kenney.nl
                 enemy = Enemy2(self.set_text())
-                enemy.draw_string()
+                # enemy.draw_string()  ##### recent edit
                 # Edits start here
                 enemy.text = self.set_text()
                 # Edits end here
-                enemy = arcade.Sprite()
+                # enemy = arcade.Sprite()  ##### recent edit
                 # enemy._set_alpha("bob")
                 enemy.scale = SPRITE_SCALING_enemy
                 enemy.texture = self.enemy_textures[1]
@@ -130,8 +130,10 @@ class Enemy(arcade.Window):
     def update_enemies(self, player):
         # Move the enemy vertically
         for enemy in self.enemy_list:
+            # arcade.draw_text(F'LIVES: Work, play, and a lot of work', 400 - 100, 200, arcade.color.WHITE,
+            #                  font_size=40, anchor_x="center")
             # enemy.draw_string()
-            # print(enemy.text)
+            print(enemy.text)
             enemy.center_x += self.enemy_change_x
 
         # Check every enemy to see if any hit the edge. If so, reverse the
