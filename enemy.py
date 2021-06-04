@@ -1,5 +1,6 @@
 import arcade
 import random
+import pathlib  # I edited this line
 ENEMY_SPEED = 2
 # This margin controls how close the enemy gets to the left or right side
 # before reversing direction.
@@ -10,6 +11,15 @@ LEFT_ENEMY_BORDER = ENEMY_VERTICAL_MARGIN
 
 # How many pixels to move the enemy down when reversing
 ENEMY_MOVE_DOWN_AMOUNT = 30
+
+
+WORDS_PATH = pathlib.Path("assets/words.txt")  # I edited this line
+WORDS_PATH = WORDS_PATH.absolute()
+FULL_WORDS_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_Invader/assets/words.txt")
+
+CITY_PATH = pathlib.Path("~/PycharmProjects/Typing_Invader/assets/city.png")  # I edited this line
+ASSETS_PATH = pathlib.Path("~/PycharmProjects/Typing_Invader/assets")  # I edited this line
+
 
 class Enemy(arcade.Window):
 
@@ -26,8 +36,44 @@ class Enemy(arcade.Window):
 
         self.right_enemy_border = - ENEMY_VERTICAL_MARGIN
 
+        # Edits start here
+        # This class could be more acurately called enemies. this controls all enemies
+        # instead of each individual enemy.
+        # self.text = "Big string"
+        # self.center_x = random.randint(0, 400)
+        # self.center_y = random.randint(0, 400)
+        # Edits end here
+
     def set_width(self, width):
         self.right_enemy_border += width
+
+    # Edits start here
+    def set_text(self):
+        with open (f"{FULL_WORDS_PATH}") as file:  # (f"{ASSETS_PATH}/words.txt") as file:  # fix the path so it works on all platforms using path module
+            word_list = file.readlines()
+            max_index = len(word_list) - 1
+            # possibly add a difficulty modifier here, specifying what length of word to grab
+            selected_word = word_list[random.randint(0, max_index)]
+        return selected_word
+
+
+    def draw_string(self, obj):
+        text = f"{obj.text}"
+        arcade.draw_text(text,
+                         start_x=obj.center_x,  # constants.HEALTH_NUMBER_OFFSET_X,
+                         start_y=obj.center_y,  # constants.HEALTH_NUMBER_OFFSET_Y,
+                         font_size=15,
+                         color=arcade.color.GOLD)
+        # print(obj.text)
+
+
+    # def on_draw(self):
+        # for enemy in self.enemy_list:
+            # enemy.draw_string()
+
+
+
+    # Edits end here
 
     def load_enemy(self):
         # Load the textures for the enemies, one facing left, one right
@@ -48,7 +94,11 @@ class Enemy(arcade.Window):
             for y in range(y_start, y_spacing * y_count + y_start, y_spacing):
                 # Create the enemy instance
                 # enemy image from kenney.nl
-                enemy = arcade.Sprite()
+                enemy = Enemy2(self.set_text())
+                enemy.draw_string()
+                # Edits start here
+                enemy.text = self.set_text()
+                # Edits end here
                 # enemy._set_alpha("bob")
                 enemy.scale = SPRITE_SCALING_enemy
                 enemy.texture = self.enemy_textures[1]
@@ -67,6 +117,8 @@ class Enemy(arcade.Window):
     def update_enemies(self):
         # Move the enemy vertically
         for enemy in self.enemy_list:
+            # enemy.draw_string()
+            # print(enemy.text)
             enemy.center_x += self.enemy_change_x
 
         # Check every enemy to see if any hit the edge. If so, reverse the
@@ -92,3 +144,23 @@ class Enemy(arcade.Window):
                 else:
                     enemy.texture = self.enemy_textures[1]
 
+
+class Enemy2(arcade.Sprite):
+    def __init__(self, text):
+        super().__init__()
+        self.text = text
+
+
+    def draw_string(self):
+        text = f"{self.text}"
+        arcade.start_render()
+        arcade.draw_text(text, self.center_x, self.center_y, arcade.color.BLACK,
+                         font_size=40)
+        arcade.finish_render()
+
+        """arcade.draw_text(text,
+                         start_x=self.center_x + 50,
+                         start_y=self.center_y + 50,
+                         font_size=15,
+                         color=arcade.color.WHITE)"""
+        # arcade.finish_render()

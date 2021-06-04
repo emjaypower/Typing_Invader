@@ -1,12 +1,23 @@
 import arcade
 import random
 from enemy import Enemy
+import pathlib  # This import is a new edit
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Typing Invader"
-
+# Edits start here
+PARENT_PATH = pathlib.Path("~/PycharmProjects/Typing_Invader")  # I edited this line
+ASSETS_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_Invader/assets")  # I edited this line
+BLIZZARD_PATH = pathlib.Path("IceBlizzard.wav")
+# FULL_BLIZZARD_PATH = BLIZZARD_PATH.absolute()
+FULL_BLIZZARD_PATH = pathlib.Path("/Users/McIntyre 1/PycharmProjects/Typing_invader/IceBlizzard.wav")
+print(FULL_BLIZZARD_PATH.exists())
+print(FULL_BLIZZARD_PATH.is_file())
+print(FULL_BLIZZARD_PATH.parent)
+print(FULL_BLIZZARD_PATH)
+# Edits end here
 class MyGame(arcade.View):
     """
     Main application class.
@@ -34,7 +45,7 @@ class MyGame(arcade.View):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
-        self.background = arcade.load_texture("space_type/assets/rsz_emfutr.png")
+        self.background = arcade.load_texture(f"{ASSETS_PATH}/rsz_emfutr.png")
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -50,6 +61,10 @@ class MyGame(arcade.View):
 
     def on_draw(self):
         """ Render the screen. """
+        # Does this cause problems by being defined above enemy?
+        # Enemy is drawing itself without arcade.start_render anywhere
+        # in the enemy file. I thin kwe need to load the background every frame,
+        # allowing the enemy to draw the text along with the enemy sprite
 
         # Clear the screen to the background color
         arcade.start_render()
@@ -137,7 +152,7 @@ class gameOver(arcade.View):
 class player(arcade.Sprite):
     def __init__(self, scale):
         super().__init__()
-        self.texture = arcade.load_texture("assets\city.png")
+        self.texture = arcade.load_texture(f"{ASSETS_PATH}/pirate.png")
         self.scale = scale
         self.health = 5
         
@@ -149,7 +164,9 @@ def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     menu = mainMenu()
     window.show_view(menu)
-    hand_sound = arcade.load_sound("space_type\IceBlizzard.wav")
+    # print(BLIZZARD_PATH.is_file())
+    # print(BLIZZARD_PATH.exists())
+    hand_sound = arcade.load_sound(f"{FULL_BLIZZARD_PATH}")
     arcade.play_sound(hand_sound)
     arcade.run()
 
