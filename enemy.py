@@ -72,9 +72,7 @@ class Enemy(arcade.Window):
         hit_list = arcade.check_for_collision_with_list(player, self.enemy_list)
         # if len(hit_list) > 0:
         #     self.enemy_list.remove_from_sprite_lists()
-        for enemy in hit_list:
-            enemy.remove_from_sprite_lists()
-        return  
+        return  hit_list
 
     def update_enemies(self, player):
         # Move the enemy vertically
@@ -103,7 +101,6 @@ class Enemy(arcade.Window):
                     enemy.texture = self.enemy_textures[0]
                 else:
                     enemy.texture = self.enemy_textures[1]
-        self.collision_detect(player)
         
  
 
