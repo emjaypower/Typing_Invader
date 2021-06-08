@@ -81,14 +81,20 @@ class MyGame(arcade.View):
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
-        if key == arcade.key.ENTER:
-            self.game_over = True
+        pass
 
     def on_update(self, delta_time):
         """ Movement and game logic """
         self.physics_engine.update()
         #
         self.enemies.update_enemies(self.player_sprite)
+        hit_list = self.enemies.collision_detect(self.player_sprite)
+        for enemy in hit_list:
+            enemy.remove_from_sprite_lists()
+            self.player_sprite.take_damage()
+        
+        if self.player_sprite.health <= 0:
+            self.game_over = True
 
         if self.game_over:
             end = gameOver()
@@ -148,7 +154,7 @@ class player(arcade.Sprite):
         super().__init__()
         self.texture = arcade.load_texture("assets\city2.0.png")
         self.scale = scale
-        self.health = 5
+        self.health = 20
         
     def take_damage(self):
         self.health -= 1
