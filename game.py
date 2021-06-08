@@ -146,7 +146,7 @@ class gameOver(arcade.View):
 class player(arcade.Sprite):
     def __init__(self, scale):
         super().__init__()
-        self.texture = arcade.load_texture("assets\city.png")
+        self.texture = arcade.load_texture("assets\city2.0.png")
         self.scale = scale
         self.health = 5
         
