@@ -108,7 +108,7 @@ class Sounds:
         """This class holds all of the sounds that we are going to be using, including sound effects
            and songs for various parts of the game"""
         self.volume = 20
-        self.sounds = {"main_1":"Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
+        self.sounds = {"main_1":"./Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
     
     def play_sound(self, sound):
         arcade.Sound(self.sounds[sound]).play(volume=self.volume)
@@ -151,7 +151,7 @@ class gameOver(arcade.View):
 class player(arcade.Sprite):
     def __init__(self, scale):
         super().__init__()
-        self.texture = arcade.load_texture("assets\city2.0.png")
+        self.texture = arcade.load_texture("assets/city2.0.png")
         self.scale = scale
         self.health = 20
         
