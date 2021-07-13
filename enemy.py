@@ -2,11 +2,11 @@ import arcade
 import random
 
 from arcade.sprite_list import check_for_collision
-ENEMY_SPEED = 5
+ENEMY_SPEED = 4
 # This margin controls how close the enemy gets to the left or right side
 # before reversing direction.
 ENEMY_VERTICAL_MARGIN = 15
-SPRITE_SCALING_enemy = 0.5
+SPRITE_SCALING_enemy = 0.10
 # RIGHT_ENEMY_BORDER = 0 - ENEMY_VERTICAL_MARGIN
 LEFT_ENEMY_BORDER = ENEMY_VERTICAL_MARGIN
 
@@ -34,9 +34,11 @@ class Enemy(arcade.Window):
     def load_enemy(self):
         # Load the textures for the enemies, one facing left, one right
         self.enemy_textures = []
-        texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_green.png", mirrored=True)
+        #:resources:images/space_shooter/playerShip1_green.png
+        #assets/NicePng_spaceship-png_138961.png
+        texture = arcade.load_texture("assets/nicePng_spaceship-png_138961.png", mirrored=True)
         self.enemy_textures.append(texture)
-        texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_green.png")
+        texture = arcade.load_texture("assets/nicePng_spaceship-png_138961.png")
         self.enemy_textures.append(texture)
 
         # Create rows and columns of enemies
