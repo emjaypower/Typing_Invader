@@ -1,6 +1,9 @@
 import arcade
 import random
 from enemy import Enemy
+from dictionary import Dictionary
+import pyglet
+import time
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -27,7 +30,10 @@ class MyGame(arcade.View):
         self.enemies.load_enemy()
         # Our physics engine
         self.physics_engine = None
-
+        self.current_word = ''
+        self.lookup_word = ''
+        self.dictionary = Dictionary()
+        self.dictionary.load_word_list()
         arcade.set_background_color(arcade.color.BLUE)
 
     def setup(self):
@@ -47,6 +53,13 @@ class MyGame(arcade.View):
         # Create enemey
         self.enemy_list = self.enemies.setup()
 
+    def show_word(self,word):
+        arcade.draw_text(F': {word}      ', 50, 450, arcade.color.WHITE, 14)
+
+    def show_guess_list(self):
+        current_word = self.dictionary.get_current_word()
+        arcade.draw_text(F'Your Word: {current_word}      ', 50, 350, arcade.color.WHITE, 14)
+
     def on_draw(self):
         """ Render the screen. """
 
@@ -60,8 +73,8 @@ class MyGame(arcade.View):
 
         start_x = 50
         start_y = 450
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.WHITE, 14)
+        # arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
+        # arcade.draw_text("Simple line of text in 12 point", start_x, start_y, arcade.color.WHITE, 14)
 
         # Draw our sprites
         self.wall_list.draw()
@@ -73,10 +86,24 @@ class MyGame(arcade.View):
         arcade.draw_text(F'LIVES: {self.player_sprite.health}', SCREEN_WIDTH - 100, 64, arcade.color.WHITE, 
                         font_size=40, anchor_x="center")
 
+        self.show_word(self.current_word)
+        self.show_guess_list()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
-        pass
+        if key >= arcade.key.A and key <= arcade.key.Z:
+            self.current_word += chr(key)
+            
+            # arcade.draw_text(F'Your Word: {self.current_word}      ', 50, 450, arcade.color.WHITE, 14)
+        if key == arcade.key.ENTER:
+            self.lookup_word = self.current_word
+            self.current_word = ''
+            if self.dictionary.get_current_word() == self.lookup_word:
+                self.enemy_list.pop()
+                self.dictionary.pop()
+                if self.dictionary.is_empty():
+                    #change levels
+                    self.dictionary.load_word_list()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -108,20 +135,25 @@ class Sounds:
         """This class holds all of the sounds that we are going to be using, including sound effects
            and songs for various parts of the game"""
         self.volume = 20
-        self.sounds = {"main_1":"./Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3"}
+        self.sounds = {"main_1":"Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3",
+        "gameover":"Kesha - your love is my drug (8bit slowed).mp3"}
     
     def play_sound(self, sound):
         arcade.Sound(self.sounds[sound]).play(volume=self.volume)
+        
 
 class mainMenu(arcade.View):
     def on_show(self):
+        self.background = None
+        self.background = arcade.load_texture("assets\cityscape-pixels-8-bit-new-york-city-wallpaper-preview.jpg")
         arcade.set_background_color(arcade.color.ANTIQUE_RUBY)
         
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Typing Invader", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 
+        arcade.draw_lrwh_rectangle_textured(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT,self.background)
+        arcade.draw_text("Typing Invader", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, 
                         font_size=75, anchor_x="center")
-        arcade.draw_text("CLICK TO START", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 -50, arcade.color.BLACK, 
+        arcade.draw_text("CLICK TO START", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 -50, arcade.color.WHITE, 
                         font_size=40, anchor_x="center")
         
     def on_mouse_press(self,_x,_y,_button,_modifiers):
@@ -132,10 +164,13 @@ class mainMenu(arcade.View):
 class gameOver(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ANTIQUE_RUBY)
-        self.output = "Game"
+        self.output = ""
+        self.background = None
+        self.background = arcade.load_texture("assets\966a1d7677304fe6dea2ba90ea1c5ff7.png")
 
     def on_draw(self):
         arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0, 0,SCREEN_WIDTH, SCREEN_HEIGHT,self.background)
         arcade.set_viewport(0, SCREEN_WIDTH,0, SCREEN_HEIGHT)
         arcade.draw_text(self.output, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.BLACK, 
                         font_size=75, anchor_x="center")
