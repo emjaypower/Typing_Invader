@@ -4,7 +4,6 @@ from enemy import Enemy
 from dictionary import Dictionary
 import pyglet
 import time
-
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
@@ -34,6 +33,10 @@ class MyGame(arcade.View):
         self.lookup_word = ''
         self.dictionary = Dictionary()
         self.dictionary.load_word_list()
+
+        # Levels variables needed.
+        self.words_right = 0
+        self.level_number = 1
         arcade.set_background_color(arcade.color.BLUE)
 
     def setup(self):
@@ -85,6 +88,9 @@ class MyGame(arcade.View):
         # display info
         arcade.draw_text(F'LIVES: {self.player_sprite.health}', SCREEN_WIDTH - 100, 64, arcade.color.WHITE, 
                         font_size=40, anchor_x="center")
+        # Display level no on the screen.
+        arcade.draw_text(F'Level: {self.level_number}',SCREEN_WIDTH - 100, 15,arcade.color.WHITE, 
+                        font_size=40, anchor_x="center")
 
         self.show_word(self.current_word)
         self.show_guess_list()
@@ -98,11 +104,11 @@ class MyGame(arcade.View):
         if key == arcade.key.ENTER:
             self.lookup_word = self.current_word
             self.current_word = ''
-            if self.dictionary.get_current_word() == self.lookup_word:
+            if self.dictionary.get_current_word().upper() == self.lookup_word.upper():
+                self.words_right += 1
                 self.enemy_list.pop()
                 self.dictionary.pop()
                 if self.dictionary.is_empty():
-                    #change levels
                     self.dictionary.load_word_list()
 
     def on_key_release(self, key, modifiers):
@@ -125,9 +131,42 @@ class MyGame(arcade.View):
         if self.game_over:
             end = gameOver()
             self.window.show_view(end)
-            #
-        if len(self.enemies.enemy_list) == 0:
+        
+        if len(self.enemies.enemy_list) == 0 and self.words_right == 7:
+            # If all enemies are dead and they got 7 right increase the level
+            self.level_up()
+
+            # Increase the speed. 
+            self.increase_speed()
+
+            # Reload the enemies
             self.enemies.load_enemy()
+
+            # Reset the member variable
+            self.words_right = 0
+            
+        elif len(self.enemies.enemy_list) == 0:
+            # Case if we get hit by the enemies and lose lives 
+
+            # Reload the enemies 
+            self.enemies.load_enemy()
+
+            # Reset member variable.
+            self.words_right = 0
+
+    def level_up(self):
+        # Everytime the user levels up increment the following.
+        self.level_number += 1
+
+    def increase_speed(self):
+        # Ensure the speed is negative if it isn't convert it to a negative. 
+        if self.enemies.enemy_change_x > 0:
+            self.enemies.enemy_change_x = self.enemies.enemy_change_x * -1   
+
+        # Increase the speed.
+        self.enemies.enemy_change_x -= 1
+
+        
 
 class Sounds:
     
