@@ -42,6 +42,8 @@ class MyGame(arcade.View):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
+        self.music = arcade.Sound("Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3", streaming= True)
+        self.current_player = self.music.play(.5)
         self.background = arcade.load_texture("assets/rsz_emfutr.png")
         # Create the Sprite lists
         self.player_list = arcade.SpriteList()
@@ -130,6 +132,7 @@ class MyGame(arcade.View):
 
         if self.game_over:
             end = gameOver()
+            self.music.stop(self.current_player)
             self.window.show_view(end)
         
         if len(self.enemies.enemy_list) == 0 and self.words_right == 7:
@@ -164,22 +167,7 @@ class MyGame(arcade.View):
             self.enemies.enemy_change_x = self.enemies.enemy_change_x * -1   
 
         # Increase the speed.
-        self.enemies.enemy_change_x -= 1
-
-        
-
-class Sounds:
-    
-    def __init__(self):
-        """This class holds all of the sounds that we are going to be using, including sound effects
-           and songs for various parts of the game"""
-        self.volume = 20
-        self.sounds = {"main_1":"Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3",
-        "gameover":"Kesha - your love is my drug (8bit slowed).mp3"}
-    
-    def play_sound(self, sound):
-        arcade.Sound(self.sounds[sound]).play(volume=self.volume)
-        
+        self.enemies.enemy_change_x -= 1        
 
 class mainMenu(arcade.View):
     def on_show(self):
@@ -203,6 +191,8 @@ class mainMenu(arcade.View):
 class gameOver(arcade.View):
     def on_show(self):
         arcade.set_background_color(arcade.color.ANTIQUE_RUBY)
+        self.music = arcade.Sound("Kesha - your love is my drug (8bit slowed).mp3", streaming= True)
+        self.current_player = self.music.play(.5)
         self.output = ""
         self.background = None
         self.background = arcade.load_texture("assets\966a1d7677304fe6dea2ba90ea1c5ff7.png")
@@ -220,6 +210,7 @@ class gameOver(arcade.View):
     def on_mouse_press(self,_x,_y,_button,_modifiers):
         if _x < SCREEN_WIDTH/2 + 100 and _x > SCREEN_WIDTH/2 - 100 and _y < SCREEN_HEIGHT/2 and _y > SCREEN_HEIGHT/2 - 50:
             menu = mainMenu()
+            self.music.stop(self.current_player)
             self.window.show_view(menu)
 
 class player(arcade.Sprite):
@@ -237,8 +228,6 @@ def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     menu = mainMenu()
     window.show_view(menu)
-    hand_sound = arcade.load_sound("Shooting Stars [8 Bit Tribute to Bag Raiders] - 8 Bit Universe.mp3")
-    arcade.play_sound(hand_sound)
     arcade.run()
 
 
